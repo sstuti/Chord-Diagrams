@@ -1,0 +1,57 @@
+---
+title: "EDAV Community Contribution Fall 2024"
+author: Sstuti D Mehra (sdm2194)
+format:
+  html:
+    embed-resources: true
+execute: 
+  echo: true
+---
+
+## The Chord Diagram
+
+The chord diagram is useful to visualize flow from one entity to another to understand the volume and direction of flow from source to destination.
+
+### Analyzing Website Traffic
+
+The example below takes sample data from a hypothetical website on how users transition between pages of the website. This is important to visualize to understand engagement on the website and to understand the improvements to be implemented.
+
+```{r}
+library(igraph)
+
+# Loading the website engagement data
+website_navigation_data <- read.csv("website_navigation.csv")
+
+# Converting the dataframe into a matrix
+navigation_matrix <- as.matrix(as_adjacency_matrix(as_tbl_graph(website_navigation_data), attr = "counts"))
+
+print(navigation_matrix)
+
+```
+
+```{r}
+library(circlize)
+
+pageColors <- c(Home="blue", AboutUs="orange", Services="green", Blog="purple", Contact="red", FAQ="cyan", Login="magenta", SignUp="yellow")
+
+# Using the circlize package to create the chord diagram
+chordDiagram(navigation_matrix, 
+             grid.col = pageColors)
+
+title(main = "User Journey on TechForward.com", cex.main = 1.5, font.main = 4)
+
+```
+
+```{r}
+# Using the chorddiag package imported from GitHub to introduce interactivity to the chord diagram
+library(chorddiag)
+
+pageColors <- c("blue", "orange", "green", "purple", "red", "cyan", "magenta", "yellow")
+
+chorddiag(navigation_matrix, groupColors = pageColors, showTicks = FALSE, margin = 90)
+
+```
+
+```{r}
+htmlwidgets::saveWidget(chorddiag(navigation_matrix, groupColors = pageColors, showTicks = FALSE, margin = 90), "chord_diag.html")
+```
